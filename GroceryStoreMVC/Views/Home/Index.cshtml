@@ -1,0 +1,46 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome to Grocery Store</h1>
+    <p>Log in to access your dashboard.</p>
+
+    <div class="d-flex justify-content-center gap-4">
+        <!-- Admin Login -->
+        <div>
+            <a href="/Identity/Account/Login?role=Admin" class="text-decoration-none">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" width="80" height="80" alt="Admin Login">
+                <p>Admin</p>
+            </a>
+        </div>
+
+        <!-- Inventory Manager Login -->
+        <div>
+            <a href="/Identity/Account/Login?role=InventoryManager" class="text-decoration-none">
+                <img src="https://cdn-icons-png.flaticon.com/512/3021/3021813.png" width="80" height="80" alt="Inventory Manager Login">
+                <p>Inventory Manager</p>
+            </a>
+        </div>
+
+        <!-- Cashier Login -->
+        <div>
+            <a href="/Identity/Account/Login?role=Cashier" class="text-decoration-none">
+                <img src="https://cdn-icons-png.flaticon.com/512/1177/1177568.png" width="80" height="80" alt="Cashier Login">
+                <p>Cashier</p>
+            </a>
+        </div>
+    </div>
+
+    <hr />
+
+    @if (User.Identity!.IsAuthenticated)
+    {
+        <h2>Welcome, @ViewData["UserName"]!</h2>
+        <p>You are logged in as <strong>@ViewData["Role"]</strong>.</p>
+    }
+    else
+    {
+        <p>Please log in to access more features.</p>
+    }
+</div>
