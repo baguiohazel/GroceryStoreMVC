@@ -7,44 +7,118 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/GroceryStoreMVC.styles.css" asp-append-version="true" />
+    <style>
+        body {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background-color: #343a40;
+            color: white;
+            position: fixed;
+            padding-top: 20px;
+            transition: all 0.3s;
+        }
+
+            .sidebar a {
+                color: white;
+                display: flex;
+                align-items: center;
+                padding: 10px 20px;
+                text-decoration: none;
+            }
+
+                .sidebar a span {
+                    margin-left: 10px;
+                }
+
+                .sidebar a:hover {
+                    background-color: #495057;
+                }
+
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            flex-grow: 1;
+            transition: margin-left 0.3s;
+            width: 100%;
+        }
+
+        .collapsed {
+            width: 60px;
+            overflow: hidden;
+            padding: 20px 0;
+        }
+
+            .collapsed a span,
+            .collapsed h4 {
+                display: none;
+            }
+
+            .collapsed + .content {
+                margin-left: 60px;
+            }
+    </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">GroceryStoreMVC</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+    @if (User.Identity!.IsAuthenticated)
+    {
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <h4 class="text-center">Grocery Store</h4>
+            <button class="btn btn-light btn-sm m-2" id="toggleSidebar">☰</button>
+                <a asp-controller="Home" asp-action="Dashboard">📊 <span>Dashboard</span></a>
+                    <!-- Product Management Dropdown -->
+                    <a href="#" class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#productMenu">📦 <span>Product Management</span></a>
+                    <ul id="productMenu" class="collapse">
+                        <li>
+                            <a class="dropdown-item" asp-controller="Products" asp-action="Index">
+                                📋 Product 
+                            </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        <li>
+                            <a class="dropdown-item" asp-controller="Categories" asp-action="Index">
+                                🏷️ Category 
+                            </a>
                         </li>
                     </ul>
-                    <partial name="_LoginPartial" />
+
+                    <!-- Other Menu Items -->
+                    <a asp-controller="Suppliers" asp-action="Index">🚚 <span>Supplier Management</span></a>
+                    <a asp-controller="Customers" asp-action="Index">🧑‍🤝‍🧑 <span>Customer Management</span></a>
+                    <a asp-controller="Orders" asp-action="Index">🛒 <span>Order Management</span></a>
+
+                    <!-- Logout -->
+                    <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home")">
+                        <button type="submit" class="nav-link btn btn-link text-white">🔓 <span>Logout</span></button>
+                    </form>
                 </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
+            }
+
+
+    <div class="content" id="content" style="margin-left: @(User.Identity.IsAuthenticated ? "250px" : "0")">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - GroceryStoreMVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        var sidebar = document.getElementById("sidebar");
+        var content = document.getElementById("content");
+        var toggleButton = document.getElementById("toggleSidebar");
+
+        if (toggleButton) {
+            toggleButton.addEventListener("click", function () {
+                sidebar.classList.toggle("collapsed");
+                content.style.marginLeft = sidebar.classList.contains("collapsed") ? "60px" : "250px";
+            });
+        }
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -1,0 +1,66 @@
+﻿@model GroceryStoreMVC.Models.Dashboard
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h2 class="mb-4">Admin Dashboard</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        <a asp-controller="Products" asp-action="Index" style="text-decoration: none;">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">📦 Total Products</h5>
+                    <h3>@Model.TotalProducts</h3>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a asp-controller="Sales" asp-action="Index" style="text-decoration: none;">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">💵 Total Sales Today</h5>
+                    <h3>@Model.TotalSalesToday.ToString("C")</h3>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a asp-controller="Customers" asp-action="Index" style="text-decoration: none;">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">🧑‍🤝‍🧑 Total Customers</h5>
+                    <h3>@Model.TotalCustomers</h3>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-6">
+        <a asp-controller="Suppliers" asp-action="Index" style="text-decoration: none;">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h5 class="card-title">🚚 Total Suppliers</h5>
+                    <h3>@Model.TotalSuppliers</h3>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-6">
+        <a asp-controller="Products" asp-action="Index" style="text-decoration: none;">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <h5 class="card-title">📊 Low Stock Alerts</h5>
+                    <h3>@Model.LowStockItems</h3>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>

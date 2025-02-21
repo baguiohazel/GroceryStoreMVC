@@ -1,7 +1,9 @@
 using System.Diagnostics;
+using GroceryStoreMVC.Data; // Add this for ApplicationDbContext
 using GroceryStoreMVC.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace GroceryStoreMVC.Controllers
 {
@@ -9,11 +11,16 @@ namespace GroceryStoreMVC.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly ApplicationDbContext _context; // Add ApplicationDbContext
 
-        public HomeController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public HomeController(
+            UserManager<IdentityUser> userManager,
+            SignInManager<IdentityUser> signInManager,
+            ApplicationDbContext context) // Inject ApplicationDbContext
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _context = context; // Initialize ApplicationDbContext
         }
 
         public async Task<IActionResult> Index()
@@ -49,6 +56,42 @@ namespace GroceryStoreMVC.Controllers
             }
 
             return View();
+        }
+
+        public IActionResult Dashboard(DbSet<Order> order)
+        {
+            if (_context.Orders == null)
+            {
+               
+                _context.Orders = order;
+            }
+
+            // Create a new Dashboard model and populate it with data
+            var dashboard = new Dashboard
+            {
+                TotalProducts = _context.Products.Count(),
+                TotalCustomers = _context.Customers.Count(),
+                TotalSuppliers = _context.Suppliers.Count(),
+                LowStockItems = _context.Products.Count(p => p.StockThreshold < 10), // Example threshold
+                TotalSalesToday = (int)_context.Orders
+                    .OfType<Order>()
+                    .Where(o => o.OrderDate.Date == DateTime.Today)
+                    .Sum(o => o.TotalAmount) // Assuming TotalAmount is the sales amount
+            };
+
+            // Pass the model to the view
+            return View(dashboard);
+        }
+
+        public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

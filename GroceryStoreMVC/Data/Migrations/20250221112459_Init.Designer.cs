@@ -4,6 +4,7 @@ using GroceryStoreMVC.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GroceryStoreMVC.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250221112459_Init")]
+    partial class Init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,7 +38,7 @@ namespace GroceryStoreMVC.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Category");
                 });
 
             modelBuilder.Entity("GroceryStoreMVC.Models.Customer", b =>
@@ -77,16 +80,16 @@ namespace GroceryStoreMVC.Data.Migrations
                     b.Property<double>("TotalAmount")
                         .HasColumnType("float");
 
-                    b.Property<string>("UsersId")
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
 
-                    b.HasIndex("UsersId");
+                    b.HasIndex("UserId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Order");
                 });
 
             modelBuilder.Entity("GroceryStoreMVC.Models.OrderDetail", b =>
@@ -115,7 +118,7 @@ namespace GroceryStoreMVC.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderDetails");
+                    b.ToTable("OrderDetail");
                 });
 
             modelBuilder.Entity("GroceryStoreMVC.Models.Product", b =>
@@ -126,7 +129,7 @@ namespace GroceryStoreMVC.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CategoryId")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -138,10 +141,7 @@ namespace GroceryStoreMVC.Data.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int>("StockThreshold")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SupplierId")
+                    b.Property<int>("SupplierId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -150,7 +150,7 @@ namespace GroceryStoreMVC.Data.Migrations
 
                     b.HasIndex("SupplierId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Product");
                 });
 
             modelBuilder.Entity("GroceryStoreMVC.Models.Supplier", b =>
@@ -169,7 +169,7 @@ namespace GroceryStoreMVC.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Suppliers");
+                    b.ToTable("Supplier");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -376,55 +376,57 @@ namespace GroceryStoreMVC.Data.Migrations
 
             modelBuilder.Entity("GroceryStoreMVC.Models.Order", b =>
                 {
-                    b.HasOne("GroceryStoreMVC.Models.Customer", "Customers")
+                    b.HasOne("GroceryStoreMVC.Models.Customer", "Customer")
                         .WithMany("Orders")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Users")
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
                         .WithMany()
-                        .HasForeignKey("UsersId");
+                        .HasForeignKey("UserId");
 
-                    b.Navigation("Customers");
+                    b.Navigation("Customer");
 
-                    b.Navigation("Users");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GroceryStoreMVC.Models.OrderDetail", b =>
                 {
-                    b.HasOne("GroceryStoreMVC.Models.Order", "Orders")
+                    b.HasOne("GroceryStoreMVC.Models.Order", "Order")
                         .WithMany("OrderDetails")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GroceryStoreMVC.Models.Product", "Products")
+                    b.HasOne("GroceryStoreMVC.Models.Product", "Product")
                         .WithMany("OrderDetails")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Orders");
+                    b.Navigation("Order");
 
-                    b.Navigation("Products");
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("GroceryStoreMVC.Models.Product", b =>
                 {
-                    b.HasOne("GroceryStoreMVC.Models.Category", "Categories")
+                    b.HasOne("GroceryStoreMVC.Models.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("GroceryStoreMVC.Models.Supplier", "Suppliers")
+                    b.HasOne("GroceryStoreMVC.Models.Supplier", "Supplier")
                         .WithMany("Products")
                         .HasForeignKey("SupplierId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Categories");
+                    b.Navigation("Category");
 
-                    b.Navigation("Suppliers");
+                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -1,46 +1,62 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
-
-<div class="text-center">
-    <h1 class="display-4">Welcome to Grocery Store</h1>
-    <p>Log in to access your dashboard.</p>
-
-    <div class="d-flex justify-content-center gap-4">
-        <!-- Admin Login -->
-        <div>
-            <a href="/Identity/Account/Login?role=Admin" class="text-decoration-none">
-                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" width="80" height="80" alt="Admin Login">
-                <p>Admin</p>
-            </a>
-        </div>
-
-        <!-- Inventory Manager Login -->
-        <div>
-            <a href="/Identity/Account/Login?role=InventoryManager" class="text-decoration-none">
-                <img src="https://cdn-icons-png.flaticon.com/512/3021/3021813.png" width="80" height="80" alt="Inventory Manager Login">
-                <p>Inventory Manager</p>
-            </a>
-        </div>
-
-        <!-- Cashier Login -->
-        <div>
-            <a href="/Identity/Account/Login?role=Cashier" class="text-decoration-none">
-                <img src="https://cdn-icons-png.flaticon.com/512/1177/1177568.png" width="80" height="80" alt="Cashier Login">
-                <p>Cashier</p>
-            </a>
-        </div>
-    </div>
-
-    <hr />
-
+﻿<div class="d-flex flex-column align-items-center justify-content-center vh-100 text-center">
     @if (User.Identity!.IsAuthenticated)
     {
-        <h2>Welcome, @ViewData["UserName"]!</h2>
-        <p>You are logged in as <strong>@ViewData["Role"]</strong>.</p>
+        <h1 class="display-4">@ViewData["WelcomeMessage"]</h1>
+        <p>Hello, <strong>@ViewData["UserName"]</strong>! You are logged in as <strong>@ViewData["Role"]</strong>.</p>
+
+        @if (ViewData["Role"]?.ToString() == "Admin")
+        {
+            <div class="alert alert-primary w-50">
+                <p>Welcome, Admin! You have full control over the system.</p>
+                <a class="btn btn-primary" href="/Admin/Dashboard">Go to Admin Dashboard</a>
+            </div>
+        }
+        else if (ViewData["Role"]?.ToString() == "Inventory Manager")
+        {
+            <div class="alert alert-warning w-50">
+                <p>Welcome, Inventory Manager! Keep track of stocks efficiently.</p>
+                <a class="btn btn-warning" href="/Inventory/Manage">Manage Inventory</a>
+            </div>
+        }
+        else if (ViewData["Role"]?.ToString() == "Cashier")
+        {
+            <div class="alert alert-success w-50">
+                <p>Welcome, Cashier! Process customer transactions smoothly.</p>
+                <a class="btn btn-success" href="/Transactions/Process">Go to POS System</a>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info w-50">
+                <p>Welcome, valued user! Enjoy shopping with us.</p>
+                <a class="btn btn-info" href="/Products/Browse">Browse Products</a>
+            </div>
+        }
     }
     else
     {
-        <p>Please log in to access more features.</p>
+        <h1 class="display-4">Welcome to Grocery Store</h1>
+        <p>Log in to access your dashboard.</p>
+
+        <div class="d-flex justify-content-center gap-4">
+            <div class="text-center">
+                <a href="/Identity/Account/Login?role=Admin" class="text-decoration-none">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" width="80" height="80" alt="Admin Login">
+                    <p>Admin</p>
+                </a>
+            </div>
+            <div class="text-center">
+                <a href="/Identity/Account/Login?role=InventoryManager" class="text-decoration-none">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3021/3021813.png" width="80" height="80" alt="Inventory Manager Login">
+                    <p>Inventory Manager</p>
+                </a>
+            </div>
+            <div class="text-center">
+                <a href="/Identity/Account/Login?role=Cashier" class="text-decoration-none">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1177/1177568.png" width="80" height="80" alt="Cashier Login">
+                    <p>Cashier</p>
+                </a>
+            </div>
+        </div>
     }
 </div>
